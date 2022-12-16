@@ -2,3 +2,4 @@
 /Backend/test.py
 /Front-end/
 /Backend/HRM/posts/migrations/
+!/Backend/HRM/db.sqlite3
