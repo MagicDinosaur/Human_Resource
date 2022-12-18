@@ -5,19 +5,26 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Employee, Authority
-from .serializers import EmployeeSerializer, AuthoritySerializer
+from .serializers import EmployeeSerializer, AuthoritySerializer, EmployeeLoginSerializer
+from rest_framework import mixins
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
+#
 
+class EmployeeList(generics.GenericAPIView,
+                   mixins.ListModelMixin,
+                   mixins.CreateModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
 
-class EmployeeList(APIView):
     def get(self, request):
-        employees = Employee.objects.all()
-        serializer = EmployeeSerializer(employees, many=True)
-        return Response(serializer.data)
-    def post(self, request, format=None):
-        serializer = EmployeeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return self.list(request)
+    def post(self, request):
+        return self.create(request)

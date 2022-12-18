@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractBaseUser, AbstractUser
+
 # Create your models here.
 #employee model
 class AdminView(admin.ModelAdmin):
     readonly_fields = ('employee_joining_date',)
-
 
 class Employee(models.Model):
     class Position(models.TextChoices):
@@ -20,26 +22,41 @@ class Employee(models.Model):
         CONTENT = 'CO', _('CONTENT')
         STAFF = 'ST', _('STAFF')
     EMPLOYEE_STATUS = [
-        (1, 'Active'),
-        (0, 'Inactive'),
-        (3, 'Pending'),
+        ('1', 'Active'),
+        ('0', 'Inactive'),
+        ('3', 'Pending'),
     ]
     employee_id = models.AutoField(primary_key=True)
     employee_name = models.CharField(max_length=50)
-    employee_email = models.EmailField(max_length=50)
+    employee_email = models.EmailField(max_length=50, unique=True)
     employee_phone = models.CharField(max_length=50)
     employee_address = models.CharField(max_length=50)
-    employee_password = models.CharField(max_length=400)
+    # employee_password = models.CharField(max_length=400)
     employee_position = models.CharField(max_length= 50, choices=Position.choices)
     employee_department = models.CharField(max_length= 50, choices=Department.choices)
     employee_salary = models.DecimalField(max_length=50, decimal_places= 3, max_digits = 9)
     employee_joining_date = models.DateField(auto_now_add=True, editable = True)
     employee_leaving_date = models.CharField(max_length=50, null=True, blank=True)
-    employee_status = models.CharField(max_length=50, choices= EMPLOYEE_STATUS, default=3)
+    employee_status = models.CharField(max_length=50, choices= EMPLOYEE_STATUS)
     employee_image = models.CharField(max_length=100)
 
     def __str__(self):
         return '%s - %s' % (self.employee_name, self.employee_position)
+
+class EmployeeLogin(AbstractBaseUser):
+    # objects = Employee()
+    employee_login = models.OneToOneField(
+        Employee,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        default=None
+    )
+    REQUIRED_FIELDS = ()
+    USERNAME_FIELD = 'employee_login'
+
+
+    employee_password = models.CharField(max_length=400, default=None)
+
 
 class Authority(models.Model):
     AUTHORITY_CODE  = [
