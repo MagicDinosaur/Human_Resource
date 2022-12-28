@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractBaseUser, AbstractUser
 #employee model
 class AdminView(admin.ModelAdmin):
     readonly_fields = ('employee_joining_date',)
-
+# lam lai  phan nay hi
 class Employee(models.Model):
     class Position(models.TextChoices):
         CEO = 'CEO'
@@ -26,36 +26,40 @@ class Employee(models.Model):
         ('0', 'Inactive'),
         ('3', 'Pending'),
     ]
-    employee_id = models.AutoField(primary_key=True)
-    employee_name = models.CharField(max_length=50)
-    employee_email = models.EmailField(max_length=50, unique=True)
-    employee_phone = models.CharField(max_length=50)
-    employee_address = models.CharField(max_length=50)
+    # employee_id = models.AutoField(primary_key=True)
+    # employee_name = models.CharField(max_length=50)
+    # employee_email = models.EmailField(max_length=50, unique=True)
+    # employee_phone = models.CharField(max_length=50)
+    # employee_address = models.CharField(max_length=50)
     # employee_password = models.CharField(max_length=400)
-    employee_position = models.CharField(max_length= 50, choices=Position.choices)
-    employee_department = models.CharField(max_length= 50, choices=Department.choices)
-    employee_salary = models.DecimalField(max_length=50, decimal_places= 3, max_digits = 9)
-    employee_joining_date = models.DateField(auto_now_add=True, editable = True)
-    employee_leaving_date = models.CharField(max_length=50, null=True, blank=True)
-    employee_status = models.CharField(max_length=50, choices= EMPLOYEE_STATUS)
-    employee_image = models.CharField(max_length=100)
+    # employee_position = models.CharField(max_length= 50, choices=Position.choices)
+    # employee_department = models.CharField(max_length= 50, choices=Department.choices)
+    # employee_salary = models.DecimalField(max_length=50, decimal_places= 3, max_digits = 9)
+    # employee_joining_date = models.DateField(auto_now_add=True, editable = True)
+    # employee_leaving_date = models.CharField(max_length=50, null=True, blank=True)
+    # employee_status = models.CharField(max_length=50, choices= EMPLOYEE_STATUS)
+    # employee_image = models.CharField(max_length=100)
+    def id(self):
+        return self.employee_id
+    def is_active(self):
+        return self.employee_status
+    is_anonymous = False
+    is_authenticated = True
+    # def is_authenticated(self)
+    #     return True
 
     def __str__(self):
         return '%s - %s' % (self.employee_name, self.employee_position)
 
-class EmployeeLogin(AbstractBaseUser):
+class EmployeeLogin(models.Model):
     # objects = Employee()
     employee_login = models.OneToOneField(
         Employee,
+        to_field='employee_id',
         on_delete=models.CASCADE,
-        primary_key=True,
-        default=None
+        primary_key = True,
     )
-    REQUIRED_FIELDS = ()
-    USERNAME_FIELD = 'employee_login'
-
-
-    employee_password = models.CharField(max_length=400, default=None)
+    employee_password = models.CharField(max_length=400)
 
 
 class Authority(models.Model):

@@ -5,7 +5,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = '__all__'
-    validate_password = make_password
 class AuthoritySerializer(serializers.ModelSerializer):
     class Meta:
         model = Authority
