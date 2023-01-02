@@ -10,22 +10,7 @@ class AdminView(admin.ModelAdmin):
     readonly_fields = ('employee_joining_date',)
 # lam lai  phan nay hi
 class Employee(models.Model):
-    class Position(models.TextChoices):
-        CEO = 'CEO'
-        CTO = 'CTO'
-        HR_MANAGER = 'HR Manager'
-        ACCOUNTING_MANAGER = 'Accounting Manager'
-        EMPLOYEE = 'Employee'
-    class Department(models.TextChoices):
-        ACCOUNTING = 'AC', _('ACCOUNTING')
-        TECH = 'TE', _('TECHNICAL')
-        CONTENT = 'CO', _('CONTENT')
-        STAFF = 'ST', _('STAFF')
-    EMPLOYEE_STATUS = [
-        ('1', 'Active'),
-        ('0', 'Inactive'),
-        ('3', 'Pending'),
-    ]
+
     # employee_id = models.AutoField(primary_key=True)
     # employee_name = models.CharField(max_length=50)
     # employee_email = models.EmailField(max_length=50, unique=True)
