@@ -14,21 +14,17 @@ from guardian.shortcuts import get_objects_for_user
 @permission_classes([IsAuthenticated, ])
 @permission_required('employees.can_view_employee')
 def employee_list(request):
-    #raise exeption if user is not authenticated or does not have permission
-    # print("hello")
     response = {'success': False,
                 'error': None,
                 'message': ''}
+    fields = ('id', 'user', 'salary', 'department', 'position', 'date_of_birth', 'date_of_joining', 'date_of_leaving', 'is_active')
     if request.method == 'GET':
-        # user = Employee.objects.get(user=user_id)
-        # serializer = EmployeeSerializer(user)
         if request.user.has_perms(['employees.can_view_employee']):
             if not request.user.has_perm('employees.can_view_salary'):
                 employee = Employee.objects.all().only('address', 'date_hired')
                 response['message'] = 'Employee data retrieved successfully- None salary'
                 serializer = EmployeeSerializer(employee, many=True, fields=('address', 'date_hired'))
             else:
-
                 employee = Employee.objects.all()
                 response['message'] = 'Employee data retrieved successfully'
                 serializer = EmployeeSerializer(employee, many=True)
